@@ -110,26 +110,14 @@ class Board
     }
 
     // Check if mark is winning on either diagonals
-    public boolean checkDiagonal(Mark mark, int index) {
-        if (index == 0) {
-            for (int i = index; i < this.board.length; i++) {
-                if (this.board[i][i] != mark) {
-                    return false;
-                }
-            }
-        } else {
-            for (int i = index; i >= 0; i--) {
-                if (this.board[this.board.length - i - 1][i] != mark) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public boolean checkDiagonal(Mark mark) {
+        return board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[2][2] == mark ||
+               board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[2][0] == mark;
     }
 
     // Check if mark is winning with any of the winning conditions
     public boolean isWinning(Mark mark) {
-        return checkHorizontal(mark) || checkVertical(mark) || checkDiagonal(mark, 0) || checkDiagonal(mark, this.board.length - 1);
+        return checkHorizontal(mark) || checkVertical(mark) || checkDiagonal(mark);
     }
 
     // Check if board is filled with marks

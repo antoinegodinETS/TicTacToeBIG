@@ -40,6 +40,14 @@ class Move
         return col;
     }
 
+    public int getBigRow(){
+        return row / 3;
+    }
+
+    public int getBigCol(){
+        return col / 3;
+    }
+
     public void setRow(int r){
         row = r;
     }

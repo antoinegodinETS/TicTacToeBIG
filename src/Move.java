@@ -16,6 +16,11 @@ class Move
         col = c;
     }
 
+    @Override
+    public String toString() {
+        return "Move [row=" + row + ", col=" + col + "]";
+    }
+
     public Move(int r, int c, int score){
         row = r;
         col = c;

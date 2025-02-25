@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class BigBoard {
     private Board[][] boards;
 
@@ -14,13 +16,16 @@ class BigBoard {
         return this.boards;
     }
 
-    public void play(Move m, Mark mark){
-        Move boardMove = new Move(m.getRow() % 3, m.getCol() % 3);
-        System.out.println(m.getBigRow());
-        System.out.println(m.getBigCol());
-        System.out.println(boardMove.getRow());
-        System.out.println(boardMove.getCol());
-        this.boards[m.getBigRow()][m.getBigCol()].play(boardMove, mark);
+    public void play(String position, Mark mark){
+        int localCol = position.charAt(0) - 'A'; 
+        int localRow = 9 - Character.getNumericValue(position.charAt(1));
+
+        int globalCol = localCol % 3;
+        int globalRow = localRow % 3;
+
+        Board currentBoard = this.boards[localRow/3][localCol/3];
+
+        currentBoard.play(new Move(globalRow, globalCol), mark);
     }
 
     @Override
@@ -49,6 +54,44 @@ class BigBoard {
         }
 
         return boardVisual;
+    }
+
+    public ArrayList<Move> getValidMoves(String position) {
+        ArrayList<Move> validMoves = new ArrayList<Move>();
+        int localCol = position.charAt(0) - 'A'; 
+        int localRow = 9 - Character.getNumericValue(position.charAt(1));
+
+        int globalCol = localCol % 3;
+        int globalRow = localRow % 3;
+
+        Board nextBoard = this.boards[globalRow][globalCol];
+
+        if (nextBoard.evaluate(Mark.X) == 0 && !nextBoard.isFull()) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (this.boards[globalRow][globalCol].getBoard()[i][j].equals(Mark.EMPTY)) {
+                        validMoves.add(new Move(globalRow * 3 + i, globalCol * 3 + j));
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (this.boards[i][j].evaluate(Mark.X) == 0 && !this.boards[i][j].isFull()) {
+                        for (int k = 0; k < 3; k++) {
+                            for (int l = 0; l < 3; l++) {
+                                if (this.boards[i][j].getBoard()[k][l].equals(Mark.EMPTY)) {
+                                    validMoves.add(new Move(i * 3 + k, j * 3 + l));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        return validMoves;
     }
 
 }

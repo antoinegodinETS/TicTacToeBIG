@@ -45,6 +45,10 @@ class Board
         for (Mark[] row: this.board) {
             boardVisual += "\n | ";
             for (Mark tile: row) {
+                if (tile == Mark.EMPTY) {
+                    boardVisual += "  | ";
+                    continue;
+                }
                 boardVisual += tile + " | ";
             }
         }

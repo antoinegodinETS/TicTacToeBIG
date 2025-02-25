@@ -16,6 +16,11 @@ class Move
         col = c;
     }
 
+    @Override
+    public String toString() {
+        return "Move [row=" + row + ", col=" + col + "]";
+    }
+
     public Move(int r, int c, int score){
         row = r;
         col = c;
@@ -38,6 +43,14 @@ class Move
 
     public int getCol(){
         return col;
+    }
+
+    public int getBigRow(){
+        return row / 3;
+    }
+
+    public int getBigCol(){
+        return col / 3;
     }
 
     public void setRow(int r){

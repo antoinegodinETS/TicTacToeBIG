@@ -9,6 +9,7 @@ class Client {
         BufferedInputStream input;
         BufferedOutputStream output;
         int[][] board = new int[9][9];
+        BigBoard bigBoard = new BigBoard();
         
         try {
             MyClient = new Socket("localhost", 8888);
@@ -83,9 +84,15 @@ class Client {
                     
             String s = new String(aBuffer);
             System.out.println("Dernier coup :"+ s);
+            bigBoard.play(s.trim(), Mark.X);
+            System.out.println("Valid moves list: ");
+            for (Move m : bigBoard.getValidMoves(s.trim())) {
+                System.out.print(m + ", ");
+            }
             System.out.println("Entrez votre coup : ");
             String move = null;
             move = console.readLine();
+            bigBoard.play(move.trim(), Mark.O);
             output.write(move.getBytes(),0,move.length());
             output.flush();
                     

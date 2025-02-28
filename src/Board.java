@@ -124,6 +124,8 @@ class Board
         return checkHorizontal(mark) || checkVertical(mark) || checkDiagonal(mark);
     }
 
+
+
     // Check if board is filled with marks
     public boolean isFull() {
         for (Mark[] row: board) {

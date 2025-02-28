@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 
 class Client {
@@ -10,6 +11,7 @@ class Client {
         BufferedOutputStream output;
         int[][] board = new int[9][9];
         BigBoard bigBoard = new BigBoard();
+        CPUPlayer cpuPlayer = new CPUPlayer(Mark.O); //instantiate CPUPlayer
         
         try {
             MyClient = new Socket("localhost", 8888);
@@ -75,37 +77,83 @@ class Client {
 
                 // Le serveur demande le prochain coup
                 // Le message contient aussi le dernier coup joue.
-            if(cmd == '3'){
-            byte[] aBuffer = new byte[16];
-                    
-            int size = input.available();
-            System.out.println("size :" + size);
-            input.read(aBuffer,0,size);
-                    
-            String s = new String(aBuffer);
-            System.out.println("Dernier coup :"+ s);
-            bigBoard.play(s.trim(), Mark.X);
-            System.out.println("Valid moves list: ");
-            for (Move m : bigBoard.getValidMoves(s.trim())) {
-                System.out.print(m + ", ");
-            }
-            System.out.println("Entrez votre coup : ");
-            String move = null;
-            move = console.readLine();
-            bigBoard.play(move.trim(), Mark.O);
-            output.write(move.getBytes(),0,move.length());
-            output.flush();
-                    
-            }
-                // Le dernier coup est invalide
-                if(cmd == '4'){
-                    System.out.println("Coup invalide, entrez un nouveau coup : ");
-                    String move = null;
-                    move = console.readLine();
-                    output.write(move.getBytes(),0,move.length());
-                    output.flush();
-                    
+//            if(cmd == '3'){
+//                byte[] aBuffer = new byte[16];
+//
+//                int size = input.available();
+//                System.out.println("size :" + size);
+//                input.read(aBuffer,0,size);
+//
+//                String lastMove = new String(aBuffer).trim();
+//                System.out.println("Dernier coup :"+ lastMove);
+//                bigBoard.play(lastMove, Mark.X);
+//                System.out.println("Valid moves list: ");
+//                for (Move m : bigBoard.getValidMoves(lastMove.trim())) {
+//                    System.out.print(m + ", ");
+//                }
+//                System.out.println();
+//
+//                ArrayList<Move> bestMoves = cpuPlayer.getNextMoveAB(bigBoard, lastMove);
+//                System.out.println("Number of explored nodes: " + cpuPlayer.getNumOfExploredNodes());
+//                System.out.println("Suggested moves by alphaBeta: ");
+//                for (Move m : bestMoves) {
+//                    System.out.print(m+ ", ");
+//                }
+//
+//                System.out.println();
+//
+//                System.out.println("Entrez votre coup : ");
+//                String move = null;
+//                move = console.readLine();
+//                bigBoard.play(move.trim(), Mark.O);
+//                output.write(move.getBytes(),0,move.length());
+//                output.flush();
+//
+//            }
+                if(cmd == '3'){
+                    byte[] aBuffer = new byte[16];
+
+                    int size = input.available();
+                    System.out.println("size :" + size);
+                    input.read(aBuffer,0,size);
+
+                    String lastMove = new String(aBuffer).trim();
+                    System.out.println("Dernier coup :"+ lastMove);
+                    bigBoard.play(lastMove, Mark.X);
+                    System.out.println("Valid moves list: ");
+                    for (Move m : bigBoard.getValidMoves(lastMove.trim())) {
+                        System.out.print(m + ", ");
+                    }
+                    System.out.println();
+
+                    ArrayList<Move> bestMoves = cpuPlayer.getNextMoveAB(bigBoard, lastMove);
+                    System.out.println("Number of explored nodes: " + cpuPlayer.getNumOfExploredNodes());
+                    System.out.println("Suggested moves by alphaBeta: ");
+                    for (Move m : bestMoves) {
+                        System.out.print(m+ ", ");
+                    }
+                    System.out.println();
+
+                    if (!bestMoves.isEmpty()) {
+                        Move bestMove = bestMoves.get(0);
+                        char col = (char) ('A' + bestMove.getCol());
+                        int row = 9- bestMove.getRow();
+                        String move = "" + col + row;
+                        System.out.println("Sending move: " + move);
+                        bigBoard.play(move, Mark.O);
+                        output.write(move.getBytes(), 0, move.length());
+                        output.flush();
+                    }
                 }
+                // Le dernier coup est invalide
+            if(cmd == '4'){
+                System.out.println("Coup invalide, entrez un nouveau coup : ");
+                String move = null;
+                move = console.readLine();
+                output.write(move.getBytes(),0,move.length());
+                output.flush();
+
+            }
                 // La partie est terminée
             if(cmd == '5'){
                     byte[] aBuffer = new byte[16];

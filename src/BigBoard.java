@@ -94,4 +94,93 @@ class BigBoard {
         return validMoves;
     }
 
+    public boolean isFull() {
+        for (Board[] row : boards) {
+            for (Board board : row) {
+                if (!board.isFull()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public Board[][] getBoards() {
+        return this.boards;
+    }
+
+    public int evaluateBigBoard(Mark mark) {
+        if (isWinningBigBoard(mark)) {
+            return 100;
+        } else {
+            switch (mark) {
+                case O:
+                    if (isWinningBigBoard(Mark.X)) {
+                        return -100;
+                    }
+                    break;
+                case X:
+                    if (isWinningBigBoard(Mark.O)) {
+                        return -100;
+                    }
+                    break;
+                case EMPTY:
+                    break;
+            }
+        }
+        //if neither are winning, then it's a draw
+        return 0;
+    }
+
+    public boolean isWinningBigBoard(Mark mark) {
+        return checkHorizontalBigBoard(mark) || checkVerticalBigBoard(mark) || checkDiagonalBigBoard(mark);
+    }
+
+    public boolean checkDiagonalBigBoard(Mark mark) {
+        boolean diag1Win = true;
+        boolean diag2Win = true;
+        for (int i = 0; i < 3; i++) {
+            if (!this.boards[i][i].isWinning(mark)) {
+                diag1Win = false;
+            }
+            if (!this.boards[i][2 - i].isWinning(mark)) {
+                diag2Win = false;
+            }
+        }
+        return diag1Win || diag2Win;
+    }
+
+
+    public boolean checkHorizontalBigBoard(Mark mark) {
+        for (int i = 0; i < 3; i++) {
+            boolean rowWin = true;
+            for (int j = 0; j < 3; j++) {
+                if (!this.boards[i][j].isWinning(mark)) {
+                    rowWin = false;
+                    break;
+                }
+            }
+            if (rowWin) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkVerticalBigBoard(Mark mark) {
+        for (int i = 0; i < 3; i++) {
+            boolean colWin = true;
+            for (int j = 0; j < 3; j++) {
+                if (!this.boards[j][i].isWinning(mark)) {
+                    colWin = false;
+                    break;
+                }
+            }
+            if (colWin) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

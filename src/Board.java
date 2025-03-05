@@ -26,6 +26,17 @@ class Board
             }
         }
     }
+
+    public boolean hasMark(Mark mark) {
+        for (Mark[] row : board) {
+            for (Mark tile : row) {
+                if (tile == mark) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
     public Mark[][] getBoard() {
         return board;

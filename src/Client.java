@@ -130,7 +130,7 @@ class Client {
                     System.out.println("Number of explored nodes: " + cpuPlayer.getNumOfExploredNodes());
                     System.out.println("Suggested moves by alphaBeta: ");
                     for (Move m : bestMoves) {
-                        System.out.print(m+ ", ");
+                        System.out.print(m + " (score: " + m.getScore() + "), ");
                     }
                     System.out.println();
 

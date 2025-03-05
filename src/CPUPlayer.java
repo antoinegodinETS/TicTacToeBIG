@@ -139,16 +139,27 @@ class CPUPlayer
 //    }
 
     public ArrayList<Move> getNextMoveAB(BigBoard bigBoard, String lastMove) {
-        numExploredNodes = 0;
-        return alphaBeta(bigBoard, this.mark.equals(Mark.X), 7, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
+        int depth = 7;
+
+        if (bigBoard.getValidMoves(lastMove).size() > 30) depth = 4;  // Reduce depth early game
+        if (bigBoard.getValidMoves(lastMove).size() < 10) depth = 8;  // Increase depth late game
+
+        ArrayList<Move> bestMoves = alphaBeta(bigBoard, this.mark.equals(Mark.X), depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
+
+        // 🚀 Only print final selected moves (not every recursive call)
+        System.out.println("Final best moves: " + bestMoves);
+
+        return bestMoves;
+
     }
 
     public ArrayList<Move> alphaBeta(BigBoard bigBoard, boolean isMax, int depth, int alpha, int beta, String lastMove) {
         ArrayList<Move> bestMoves = new ArrayList<>();
         numExploredNodes++;
         Board[][] boards = bigBoard.getBoards();
-        Mark currentMark = isMax ? Mark.X : Mark.O;
+        Mark currentMark = isMax ? this.mark : (this.mark == Mark.X ? Mark.O : Mark.X);
 
+        //terminal condition
         if (bigBoard.isFull() || depth == 0) {
             int score = bigBoard.evaluateBigBoard(this.mark);
             return new ArrayList<>(List.of(new Move(score)));
@@ -168,8 +179,12 @@ class CPUPlayer
             // Play the move
             boards[boardRow][boardCol].play(new Move(localRow, localCol), currentMark);
 
+            // Get next move string representation for recursive call
+            String nextMove = String.format("%c%d", 'A' + move.getCol(), 9 - move.getRow());
+
             // Recursive call
-            int currentScore = alphaBeta(bigBoard, !isMax, depth - 1, alpha, beta, move.toString()).get(0).getScore();
+            ArrayList<Move> result = alphaBeta(bigBoard, !isMax, depth - 1, alpha, beta, nextMove);
+            int currentScore = result.isEmpty() ? 0 : result.get(0).getScore();
 
             // Undo move
             boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);
@@ -198,6 +213,10 @@ class CPUPlayer
                 break;
             }
         }
+//        if (bestMoves.isEmpty()) {
+//            return new ArrayList<>(List.of(new Move(isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE)));
+//        }
+
         return bestMoves;
     }
 

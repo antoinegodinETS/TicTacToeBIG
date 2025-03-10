@@ -14,11 +14,17 @@ class CPUPlayer
     // au début de votre MinMax ou Alpha Beta.
     private int numExploredNodes;
     private Mark mark;
+    private Mark oponentMark;
 
     // Le constructeur reçoit en paramètre le
     // joueur MAX (X ou O)
     public CPUPlayer(Mark cpu){
         this.mark = cpu;
+        if (cpu == Mark.X) {
+            this.oponentMark = Mark.O;
+        } else {
+            this.oponentMark = Mark.X;
+        }
     }
 
     // Ne pas changer cette méthode
@@ -42,6 +48,10 @@ class CPUPlayer
 
     public Mark getMark() {
         return mark;
+    }
+
+    public Mark getOponentMark() {
+        return oponentMark;
     }
 
     private ArrayList<Move> minmax(Board board, boolean isMax, int depth) {

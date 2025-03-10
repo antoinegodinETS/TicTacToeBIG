@@ -11,7 +11,7 @@ class Client {
         BufferedOutputStream output;
         int[][] board = new int[9][9];
         BigBoard bigBoard = new BigBoard();
-        CPUPlayer cpuPlayer = new CPUPlayer(Mark.O); //instantiate CPUPlayer
+        CPUPlayer cpuPlayer= new CPUPlayer(Mark.O);; //initie CPUPlayer
         
         try {
             MyClient = new Socket("localhost", 8888);
@@ -26,14 +26,15 @@ class Client {
                 System.out.println(cmd);
                 // Debut de la partie en joueur blanc
                 if(cmd == '1'){
+					cpuPlayer = new CPUPlayer(Mark.X);
                     byte[] aBuffer = new byte[1024];
                     
-            int size = input.available();
-            //System.out.println("size " + size);
-            input.read(aBuffer,0,size);
+					int size = input.available();
+					//System.out.println("size " + size);
+					input.read(aBuffer,0,size);
                     String s = new String(aBuffer).trim();
                     System.out.println(s);
-                    String[] boardValues;
+                    /*String[] boardValues;
                     boardValues = s.split(" ");
                     int x=0,y=0;
                     for(int i=0; i<boardValues.length;i++){
@@ -43,13 +44,20 @@ class Client {
                             x = 0;
                             y++;
                         }
-                    }
+                    }*/
 
                     System.out.println("Nouvelle partie! Vous jouer blanc, entrez votre premier coup : ");
-                    String move = null;
+                    
+					String move = "D6";
+					bigBoard.play(move, Mark.X);
+					output.write(move.getBytes(), 0, move.length());
+                    output.flush();
+					System.out.println(bigBoard); //affiche le bigBoard
+					
+					/*String move = null;
                     move = console.readLine();
                     output.write(move.getBytes(),0,move.length());
-                    output.flush();
+                    output.flush();*/
                 }
                 // Debut de la partie en joueur Noir
                 if(cmd == '2'){
@@ -61,7 +69,8 @@ class Client {
                     input.read(aBuffer,0,size);
                     String s = new String(aBuffer).trim();
                     System.out.println(s);
-                    String[] boardValues;
+					System.out.println(bigBoard); //affiche le bigBoard
+                    /*String[] boardValues;
                     boardValues = s.split(" ");
                     int x=0,y=0;
                     for(int i=0; i<boardValues.length;i++){
@@ -71,7 +80,7 @@ class Client {
                             x = 0;
                             y++;
                         }
-                    }
+                    } */
                 }
 
 
@@ -119,7 +128,7 @@ class Client {
 
                     String lastMove = new String(aBuffer).trim();
                     System.out.println("Dernier coup :"+ lastMove);
-                    bigBoard.play(lastMove, Mark.X);
+                    bigBoard.play(lastMove, cpuPlayer.getOponentMark());
                     System.out.println("Valid moves list: ");
                     for (Move m : bigBoard.getValidMoves(lastMove.trim())) {
                         System.out.print(m + ", ");
@@ -140,10 +149,11 @@ class Client {
                         int row = 9- bestMove.getRow();
                         String move = "" + col + row;
                         System.out.println("Sending move: " + move);
-                        bigBoard.play(move, Mark.O);
+                        bigBoard.play(move, cpuPlayer.getMark());
                         output.write(move.getBytes(), 0, move.length());
                         output.flush();
                     }
+					System.out.println(bigBoard); //affiche le bigBoard
                 }
                 // Le dernier coup est invalide
             if(cmd == '4'){

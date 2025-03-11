@@ -298,8 +298,13 @@ class BigBoard {
 
     public int evaluateBigBoard(Mark mark) {
         // Quick win/loss detection
+        if (mark == Mark.X) {
+            if (isWinningBigBoard(Mark.O)) return -100;
+        } else {
+            if (isWinningBigBoard(Mark.X)) return -100;
+        }
+
         if (isWinningBigBoard(mark)) return 100;
-        if (isWinningBigBoard(mark == Mark.X ? Mark.O : Mark.X)) return -100;
 
         // More sophisticated scoring
         int score = calculateBoardControlScore(mark);

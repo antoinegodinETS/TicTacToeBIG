@@ -1,6 +1,6 @@
 
 
-class Move
+class Move implements Comparable<Move>
 {
     private int row;
     private int col;
@@ -18,7 +18,9 @@ class Move
 
     @Override
     public String toString() {
-        return "Move [row=" + row + ", col=" + col + "]";
+        char letter = (char) ('A' + col);
+        int number = 9 - row;
+        return letter + Integer.toString(number);
     }
 
     public Move(int r, int c, int score){
@@ -59,5 +61,16 @@ class Move
 
     public void setCol(int c){
         col = c;
+    }
+
+    @Override
+    public int compareTo(Move m) {
+        if (this.getScore() < m.getScore()) {
+            return 1;
+        } else if (this.getScore() > m.getScore()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

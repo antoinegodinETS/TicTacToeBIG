@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 // IMPORTANT: Il ne faut pas changer la signature des méthodes
@@ -14,16 +16,16 @@ class CPUPlayer
     // au début de votre MinMax ou Alpha Beta.
     private int numExploredNodes;
     private Mark mark;
-    private Mark oponentMark;
+    private Mark opponentMark;
 
     // Le constructeur reçoit en paramètre le
     // joueur MAX (X ou O)
     public CPUPlayer(Mark cpu){
         this.mark = cpu;
         if (cpu == Mark.X) {
-            this.oponentMark = Mark.O;
+            this.opponentMark = Mark.O;
         } else {
-            this.oponentMark = Mark.X;
+            this.opponentMark = Mark.X;
         }
     }
 
@@ -50,8 +52,8 @@ class CPUPlayer
         return mark;
     }
 
-    public Mark getOponentMark() {
-        return oponentMark;
+    public Mark getOpponentMark() {
+        return opponentMark;
     }
 
     private ArrayList<Move> minmax(Board board, boolean isMax, int depth) {
@@ -154,7 +156,7 @@ class CPUPlayer
         if (bigBoard.getValidMoves(lastMove).size() > 30) depth = 4;  // Reduce depth early game
         if (bigBoard.getValidMoves(lastMove).size() < 10) depth = 8;  // Increase depth late game
 
-        ArrayList<Move> bestMoves = alphaBeta(bigBoard, this.mark.equals(Mark.X), depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
+        ArrayList<Move> bestMoves = alphaBeta(bigBoard, true, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
 
         // 🚀 Only print final selected moves (not every recursive call)
         System.out.println("Final best moves: " + bestMoves);
@@ -167,11 +169,10 @@ class CPUPlayer
         ArrayList<Move> bestMoves = new ArrayList<>();
         numExploredNodes++;
         Board[][] boards = bigBoard.getBoards();
-        Mark currentMark = isMax ? this.mark : (this.mark == Mark.X ? Mark.O : Mark.X);
-
+        Mark currentMark = isMax ? this.getMark() : this.getOpponentMark();
         //terminal condition
         if (bigBoard.isFull() || depth == 0) {
-            int score = bigBoard.evaluateBigBoard(this.mark);
+            int score = bigBoard.evaluateBigBoard(this.getMark());
             return new ArrayList<>(List.of(new Move(score)));
         }
 

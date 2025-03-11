@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 class Client {
@@ -128,13 +129,16 @@ class Client {
 
                     String lastMove = new String(aBuffer).trim();
                     System.out.println("Dernier coup :"+ lastMove);
-                    bigBoard.play(lastMove, cpuPlayer.getOponentMark());
+                    bigBoard.play(lastMove, cpuPlayer.getOpponentMark());
                     System.out.println("Valid moves list: ");
-                    for (Move m : bigBoard.getValidMoves(lastMove.trim())) {
-                        System.out.print(m + ", ");
+                    Iterator<Move> iterator = bigBoard.getValidMoves(lastMove.trim()).iterator();
+                    while (iterator.hasNext()) {
+                        System.out.print(iterator.next());
+                        if (iterator.hasNext()) {
+                            System.out.print(", ");
+                        }
                     }
                     System.out.println();
-
                     ArrayList<Move> bestMoves = cpuPlayer.getNextMoveAB(bigBoard, lastMove);
                     System.out.println("Number of explored nodes: " + cpuPlayer.getNumOfExploredNodes());
                     System.out.println("Suggested moves by alphaBeta: ");
@@ -145,15 +149,11 @@ class Client {
 
                     if (!bestMoves.isEmpty()) {
                         Move bestMove = bestMoves.get(0);
-                        char col = (char) ('A' + bestMove.getCol());
-                        int row = 9- bestMove.getRow();
-                        String move = "" + col + row;
-                        System.out.println("Sending move: " + move);
-                        bigBoard.play(move, cpuPlayer.getMark());
-                        output.write(move.getBytes(), 0, move.length());
+                        System.out.println("Sending move: " + bestMove.toString());
+                        bigBoard.play(bestMove.toString(), cpuPlayer.getMark());
+                        output.write(bestMove.toString().getBytes(), 0, bestMove.toString().length());
                         output.flush();
                     }
-					System.out.println(bigBoard); //affiche le bigBoard
                 }
                 // Le dernier coup est invalide
             if(cmd == '4'){

@@ -7,8 +7,7 @@ import java.util.Arrays;
 class Board
 {
     private Mark[][] board;
-
-   
+    private Mark winner = Mark.EMPTY;
 
     // Ne pas changer la signature de cette méthode
     public Board() {
@@ -38,6 +37,10 @@ class Board
         return false;
     }
     
+    public void setWinner(Mark winner) {
+        this.winner = winner;
+    }
+
     public Mark[][] getBoard() {
         return board;
     }
@@ -74,6 +77,7 @@ class Board
     public int evaluate(Mark mark) {
         // Check if the current mark is winning
         if (isWinning(mark)) {
+            setWinner(mark);
             return 100;
         } else {
             // Else, check if other mark is winning
@@ -94,6 +98,10 @@ class Board
         }
         // If neither are winning, then it's a draw
         return 0;
+    }
+
+    public Mark getWinner() {
+        return winner;
     }
 
     // Check if mark is winning on a horizontal line

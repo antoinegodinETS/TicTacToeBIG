@@ -66,7 +66,7 @@ class BigBoard {
 
         Board nextBoard = this.boards[globalRow][globalCol];
 
-        if (nextBoard.evaluate(Mark.X) == 0 && !nextBoard.isFull()) {
+        if (nextBoard.getWinner() == Mark.EMPTY && !nextBoard.isFull()) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (this.boards[globalRow][globalCol].getBoard()[i][j].equals(Mark.EMPTY)) {
@@ -77,7 +77,7 @@ class BigBoard {
         } else {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (this.boards[i][j].evaluate(Mark.X) == 0 && !this.boards[i][j].isFull()) {
+                    if (this.boards[i][j].getWinner() == Mark.EMPTY && !this.boards[i][j].isFull()) {
                         for (int k = 0; k < 3; k++) {
                             for (int l = 0; l < 3; l++) {
                                 if (this.boards[i][j].getBoard()[k][l].equals(Mark.EMPTY)) {

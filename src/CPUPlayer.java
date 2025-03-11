@@ -165,9 +165,10 @@ class CPUPlayer
 
     }
 
-    public ArrayList<Move> alphaBeta(BigBoard bigBoard, boolean isMax, int depth, int alpha, int beta, String lastMove) {
+    public ArrayList<Move> alphaBeta(BigBoard previousBigBoard, boolean isMax, int depth, int alpha, int beta, String lastMove) {
         ArrayList<Move> bestMoves = new ArrayList<>();
         numExploredNodes++;
+        BigBoard bigBoard = previousBigBoard.copy();
         Board[][] boards = bigBoard.getBoards();
         Mark currentMark = isMax ? this.getMark() : this.getOpponentMark();
         //terminal condition
@@ -198,7 +199,7 @@ class CPUPlayer
             int currentScore = result.isEmpty() ? 0 : result.get(0).getScore();
 
             // Undo move
-            boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);
+            //boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);
 
             if (isMax) {
                 if (currentScore > bestScore) {

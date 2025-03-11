@@ -26,6 +26,7 @@ class BigBoard {
         Board currentBoard = this.boards[localRow/3][localCol/3];
 
         currentBoard.play(new Move(globalRow, globalCol), mark);
+        this.boards[localRow/3][localCol/3].isWinning(mark);
     }
 
     @Override
@@ -423,6 +424,16 @@ class BigBoard {
             if (markCount == 2 && emptyCount == 1) score += 3;
         }
         return score;
+    }
+
+    public BigBoard copy() {
+        BigBoard newBigBoard = new BigBoard();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                newBigBoard.boards[i][j] = this.boards[i][j].copy();
+            }
+        }
+        return newBigBoard;
     }
 
 }

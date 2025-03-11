@@ -77,7 +77,6 @@ class Board
     public int evaluate(Mark mark) {
         // Check if the current mark is winning
         if (isWinning(mark)) {
-            setWinner(mark);
             return 100;
         } else {
             // Else, check if other mark is winning
@@ -140,7 +139,11 @@ class Board
 
     // Check if mark is winning with any of the winning conditions
     public boolean isWinning(Mark mark) {
-        return checkHorizontal(mark) || checkVertical(mark) || checkDiagonal(mark);
+        boolean result = checkHorizontal(mark) || checkVertical(mark) || checkDiagonal(mark);
+        if (result) {
+            setWinner(mark);
+        }
+        return result;
     }
 
 
@@ -155,5 +158,17 @@ class Board
             }
         }
         return true;
+    }
+    
+    // Create a copy of the board
+    public Board copy(){
+        Board newBoard = new Board();
+        for (int i=0; i<3; i++){
+            for (int j=0; j<3; j++){
+                newBoard.board[i][j] = board[i][j];
+            }
+        }
+        newBoard.setWinner(this.getWinner());
+        return newBoard;
     }
 }

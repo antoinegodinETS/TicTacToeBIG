@@ -154,6 +154,9 @@ class Client {
                         output.write(bestMove.toString().getBytes(), 0, bestMove.toString().length());
                         output.flush();
                     }
+
+                    System.out.println(bigBoard);
+
                 }
                 // Le dernier coup est invalide
             if(cmd == '4'){

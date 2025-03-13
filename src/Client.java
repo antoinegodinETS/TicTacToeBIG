@@ -151,6 +151,7 @@ class Client {
                         Move bestMove = bestMoves.get(0);
                         System.out.println("Sending move: " + bestMove.toString());
                         bigBoard.play(bestMove.toString(), cpuPlayer.getMark());
+                        cpuPlayer.incrementMoveCount();
                         output.write(bestMove.toString().getBytes(), 0, bestMove.toString().length());
                         output.flush();
                     }

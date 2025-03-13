@@ -17,6 +17,7 @@ class CPUPlayer
     private int numExploredNodes;
     private Mark mark;
     private Mark opponentMark;
+    private int moveCount;
 
     // Le constructeur reçoit en paramètre le
     // joueur MAX (X ou O)
@@ -32,6 +33,14 @@ class CPUPlayer
     // Ne pas changer cette méthode
     public int  getNumOfExploredNodes(){
         return numExploredNodes;
+    }
+
+    public int getMoveCount() {
+        return moveCount;
+    }
+
+    void incrementMoveCount() {
+        moveCount = moveCount + 2;
     }
 
     // Retourne la liste des coups possibles.  Cette liste contient
@@ -90,71 +99,14 @@ class CPUPlayer
         return bestMoves;
     }
 
-//    private ArrayList<Move> alphaBeta(BigBoard bigBoard, boolean isMax, int depth, int alpha, int beta) {
-//        ArrayList<Move> bestMoves = new ArrayList<Move>();
-//        numExploredNodes++;
-//        Board[][] boards = bigBoard.getBoards();
-//
-//        Mark currentMark = isMax ? Mark.X : Mark.O;
-//
-//        if (bigBoard.isFull() || depth == 0) {
-//            int score = bigBoard.evaluateBigBoard(boards, this.mark) ? (isMax ? Integer.MAX_VALUE : Integer.MIN_VALUE) : 0;
-//            return new ArrayList<Move>(List.of(new Move(score)));
-//        }
-//
-//        int bestScore = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-//        for (int i = 0; i < boards.length; i++) {
-//            for (int j = 0; j < boards[0].length; j++) {
-//                if (boards[i][j].evaluate(currentMark) == 0 && !boards[i][j].isFull()) {
-//                    for (int k = 0; k < 3; k++) {
-//                        for (int l = 0; l < 3; l++) {
-//                            if (boards[i][j].getBoard()[k][l] == Mark.EMPTY) {
-//                                boards[i][j].play(new Move(k, l), currentMark);
-//                                int currentScore = alphaBeta(bigBoard, !isMax, depth - 1, alpha, beta).get(0).getScore();
-//                                boards[i][j].play(new Move(k, l), Mark.EMPTY);
-//
-//                                if (isMax) {
-//                                    if (currentScore > bestScore) {
-//                                        bestScore = currentScore;
-//                                        bestMoves.clear();
-//                                        bestMoves.add(new Move(i * 3 + k, j * 3 + l, bestScore));
-//                                    } else if (currentScore == bestScore) {
-//                                        bestMoves.add(new Move(i * 3 + k, j * 3 + l, bestScore));
-//                                    }
-//                                    alpha = Math.max(alpha, bestScore);
-//                                } else {
-//                                    if (currentScore < bestScore) {
-//                                        bestScore = currentScore;
-//                                        bestMoves.clear();
-//                                        bestMoves.add(new Move(i * 3 + k, j * 3 + l, bestScore));
-//                                    } else if (currentScore == bestScore) {
-//                                        bestMoves.add(new Move(i * 3 + k, j * 3 + l, bestScore));
-//                                    }
-//                                    beta = Math.min(beta, bestScore);
-//                                }
-//                                if (beta <= alpha) {
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        if (beta <= alpha) {
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//            if (beta <= alpha) {
-//                break;
-//            }
-//        }
-//        return bestMoves;
-//    }
 
     public ArrayList<Move> getNextMoveAB(BigBoard bigBoard, String lastMove) {
-        int depth = 7;
+//        int depth = Math.min(4 + moveCount / 10, 10);
+        int depth =0;
 
-        if (bigBoard.getValidMoves(lastMove).size() > 30) depth = 4;  // Reduce depth early game
-        if (bigBoard.getValidMoves(lastMove).size() < 10) depth = 8;  // Increase depth late game
+        if (moveCount < 15) depth = 6;  // Reduce depth early game
+        if (moveCount >= 15 && moveCount <30) depth = 7; // Increase depth mid game
+        if (moveCount >= 30) depth = 8; // Increase depth late game
 
         ArrayList<Move> bestMoves = alphaBeta(bigBoard, true, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
 

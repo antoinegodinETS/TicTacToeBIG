@@ -107,6 +107,7 @@ class CPUPlayer
         if (moveCount < 15) depth = 6;  // Reduce depth early game
         if (moveCount >= 15 && moveCount <30) depth = 7; // Increase depth mid game
         if (moveCount >= 30) depth = 8; // Increase depth late game
+        System.out.println("depth = " + depth);
 
         ArrayList<Move> bestMoves = alphaBeta(bigBoard, true, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
 
@@ -151,7 +152,7 @@ class CPUPlayer
             int currentScore = result.isEmpty() ? 0 : result.get(0).getScore();
 
             // Undo move
-            //boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);
+            boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);
 
             if (isMax) {
                 if (currentScore > bestScore) {

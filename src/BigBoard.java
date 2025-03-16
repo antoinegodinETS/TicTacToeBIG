@@ -66,7 +66,7 @@ class BigBoard {
         int globalRow = localRow % 3;
 
         Board nextBoard = this.boards[globalRow][globalCol];
-        nextBoard.evaluate(Mark.X);
+//        nextBoard.evaluate(Mark.X);
 
         if (nextBoard.getWinner() == null && !nextBoard.isFull()) {
             for (int i = 0; i < 3; i++) {
@@ -79,7 +79,7 @@ class BigBoard {
         } else {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    this.boards[i][j].evaluate(Mark.X);
+//                    this.boards[i][j].evaluate(Mark.X);
                     if (this.boards[i][j].getWinner() == null && !this.boards[i][j].isFull()) {
                         for (int k = 0; k < 3; k++) {
                             for (int l = 0; l < 3; l++) {

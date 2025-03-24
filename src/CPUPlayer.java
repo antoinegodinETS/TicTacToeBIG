@@ -108,7 +108,7 @@ class CPUPlayer
         if (moveCount >= 15 && moveCount <30) depth = 7; // Increase depth mid game
         if (moveCount >= 30) depth = 8; // Increase depth late game
 
-        ArrayList<Move> bestMoves = alphaBeta(bigBoard, true, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove);
+        ArrayList<Move> bestMoves = alphaBeta(bigBoard, true, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove, true);
 
         // 🚀 Only print final selected moves (not every recursive call)
         System.out.println("Final best moves: " + bestMoves);
@@ -117,7 +117,7 @@ class CPUPlayer
 
     }
 
-    public ArrayList<Move> alphaBeta(BigBoard previousBigBoard, boolean isMax, int depth, int alpha, int beta, String lastMove) {
+    public ArrayList<Move> alphaBeta(BigBoard previousBigBoard, boolean isMax, int depth, int alpha, int beta, String lastMove, boolean first) {
         ArrayList<Move> bestMoves = new ArrayList<>();
         numExploredNodes++;
         BigBoard bigBoard = previousBigBoard.copy();
@@ -147,8 +147,12 @@ class CPUPlayer
             String nextMove = String.format("%c%d", 'A' + move.getCol(), 9 - move.getRow());
 
             // Recursive call
-            ArrayList<Move> result = alphaBeta(bigBoard, !isMax, depth - 1, alpha, beta, nextMove);
+            ArrayList<Move> result = alphaBeta(bigBoard, !isMax, depth - 1, alpha, beta, nextMove, false);
             int currentScore = result.isEmpty() ? 0 : result.get(0).getScore();
+
+            if (first) {
+                System.out.println("Move: " + move + " Score: " + currentScore);
+            }
 
             // Undo move
             //boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);

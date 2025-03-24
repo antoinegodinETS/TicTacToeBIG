@@ -333,9 +333,9 @@ class BigBoard {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (boards[i][j].isWinning(mark)) {
+                if (boards[i][j].getWinner() == mark) {
                     score += 15; // Slightly higher value for won boards
-                } else if (boards[i][j].isWinning(opponent)) {
+                } else if (boards[i][j].getWinner() == opponent) {
                     score -= 15;
                 } else {
                     // More granular scoring for partial board control
@@ -354,23 +354,38 @@ class BigBoard {
         int potentialScore = 0;
 
         // Evaluate board center and corner control across the big board
-        if (isCenterControlled(mark))
+        if (isCenterOwned(mark))
+            potentialScore += 20;
+        else if (isCenterControlled(mark))
             potentialScore += 10;
-        if (hasCornerAdvantage(mark))
-            potentialScore += 5;
+        if (isCornerOwned(mark))
+            potentialScore += 15;
+        /*else if (hasCornerAdvantage(mark))
+            potentialScore += 5;*/
 
         return potentialScore;
     }
 
+    private boolean isCenterOwned(Mark mark) {
+        return boards[1][1].getWinner() == mark;
+    }
+
     private boolean isCenterControlled(Mark mark) {
-        return boards[1][1].hasMark(mark);
+        return boards[1][1].hasMark(mark) && this.boards[1][1].getWinner() == null;
+    }
+
+    private boolean isCornerOwned (Mark mark) {
+        return (boards[0][0].getWinner() == mark ||
+                boards[0][2].getWinner() == mark ||
+                boards[2][0].getWinner() == mark ||
+                boards[2][2].getWinner() == mark);
     }
 
     private boolean hasCornerAdvantage(Mark mark) {
-        return (boards[0][0].hasMark(mark) ||
-                boards[0][2].hasMark(mark) ||
-                boards[2][0].hasMark(mark) ||
-                boards[2][2].hasMark(mark));
+        return (boards[0][0].hasMark(mark) && this.boards[0][0].getWinner() == null ||
+                boards[0][2].hasMark(mark) && this.boards[0][2].getWinner() == null ||
+                boards[2][0].hasMark(mark) && this.boards[2][0].getWinner() == null ||
+                boards[2][2].hasMark(mark) && this.boards[2][2].getWinner() == null);
     }
 
     // Enhanced individual board evaluation with positional weighting

@@ -156,7 +156,7 @@ class Client {
                         output.flush();
                     }
 
-                    System.out.println(bigBoard);
+//                    System.out.println(bigBoard);
 
                 }
                 // Le dernier coup est invalide

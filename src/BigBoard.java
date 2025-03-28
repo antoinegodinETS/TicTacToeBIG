@@ -26,7 +26,7 @@ class BigBoard {
         Board currentBoard = this.boards[localRow / 3][localCol / 3];
 
         currentBoard.play(new Move(globalRow, globalCol), mark);
-        this.boards[localRow/3][localCol/3].isWinning(mark);
+        this.boards[localRow / 3][localCol / 3].isWinning(mark);
     }
 
     @Override
@@ -57,46 +57,46 @@ class BigBoard {
         return boardVisual;
     }
 
-//    public ArrayList<Move> getValidMoves(String position) {
-//        ArrayList<Move> validMoves = new ArrayList<Move>();
-//        int localCol = position.charAt(0) - 'A';
-//        int localRow = 9 - Character.getNumericValue(position.charAt(1));
-//
-//        int globalCol = localCol % 3;
-//        int globalRow = localRow % 3;
-//
-//        Board nextBoard = this.boards[globalRow][globalCol];
-////        nextBoard.evaluate(Mark.X);
-//
-//        if (nextBoard.getWinner() == null && !nextBoard.isFull()) {
-//            for (int i = 0; i < 3; i++) {
-//                for (int j = 0; j < 3; j++) {
-//                    if (this.boards[globalRow][globalCol].getBoard()[i][j].equals(Mark.EMPTY)) {
-//                        validMoves.add(new Move(globalRow * 3 + i, globalCol * 3 + j));
-//                    }
-//                }
-//            }
-//        } else {
-//            for (int i = 0; i < 3; i++) {
-//                for (int j = 0; j < 3; j++) {
-//                    this.boards[i][j].evaluate(Mark.X);
-//                    if (this.boards[i][j].getWinner() == null && !this.boards[i][j].isFull()) {
-//                        for (int k = 0; k < 3; k++) {
-//                            for (int l = 0; l < 3; l++) {
-//                                if (this.boards[i][j].getBoard()[k][l].equals(Mark.EMPTY)) {
-//                                    validMoves.add(new Move(i * 3 + k, j * 3 + l));
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return validMoves;
-//    }
+    // public ArrayList<Move> getValidMoves(String position) {
+    // ArrayList<Move> validMoves = new ArrayList<Move>();
+    // int localCol = position.charAt(0) - 'A';
+    // int localRow = 9 - Character.getNumericValue(position.charAt(1));
+    //
+    // int globalCol = localCol % 3;
+    // int globalRow = localRow % 3;
+    //
+    // Board nextBoard = this.boards[globalRow][globalCol];
+    //// nextBoard.evaluate(Mark.X);
+    //
+    // if (nextBoard.getWinner() == null && !nextBoard.isFull()) {
+    // for (int i = 0; i < 3; i++) {
+    // for (int j = 0; j < 3; j++) {
+    // if (this.boards[globalRow][globalCol].getBoard()[i][j].equals(Mark.EMPTY)) {
+    // validMoves.add(new Move(globalRow * 3 + i, globalCol * 3 + j));
+    // }
+    // }
+    // }
+    // } else {
+    // for (int i = 0; i < 3; i++) {
+    // for (int j = 0; j < 3; j++) {
+    // this.boards[i][j].evaluate(Mark.X);
+    // if (this.boards[i][j].getWinner() == null && !this.boards[i][j].isFull()) {
+    // for (int k = 0; k < 3; k++) {
+    // for (int l = 0; l < 3; l++) {
+    // if (this.boards[i][j].getBoard()[k][l].equals(Mark.EMPTY)) {
+    // validMoves.add(new Move(i * 3 + k, j * 3 + l));
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    //
+    // return validMoves;
+    // }
 
-//-------------------new-------------------
+    // -------------------new-------------------
     public ArrayList<Move> getValidMoves(String position) {
         ArrayList<Move> validMoves = new ArrayList<>();
 
@@ -256,7 +256,6 @@ class BigBoard {
     // }
     //
 
-
     private int evaluatePartialBigBoardWins(Mark mark) {
         int score = 0;
         // Check rows for 2 out of 3 wins
@@ -393,17 +392,17 @@ class BigBoard {
         return evaluatePartialBigBoardWins(mark) * 2; // Multiply existing partial win logic
     }
 
-//    private int calculatePotentialWinScore(Mark mark) {
-//        int potentialScore = 0;
-//
-//        // Evaluate board center and corner control across the big board
-//        if (isCenterControlled(mark))
-//            potentialScore += 10;
-//        if (hasCornerAdvantage(mark))
-//            potentialScore += 5;
-//
-//        return potentialScore;
-//    }
+    // private int calculatePotentialWinScore(Mark mark) {
+    // int potentialScore = 0;
+    //
+    // // Evaluate board center and corner control across the big board
+    // if (isCenterControlled(mark))
+    // potentialScore += 10;
+    // if (hasCornerAdvantage(mark))
+    // potentialScore += 5;
+    //
+    // return potentialScore;
+    // }
 
     private boolean isCenterControlled(Mark mark) {
         return boards[1][1].hasMark(mark);
@@ -493,8 +492,7 @@ class BigBoard {
         return score;
     }
 
-
-//    --------------new--------------
+    // --------------new--------------
 
     private int calculatePotentialWinScore(Mark mark) {
         int potentialScore = 0;
@@ -522,21 +520,28 @@ class BigBoard {
             int opponentRowThreats = 0, opponentColThreats = 0;
 
             for (int j = 0; j < 3; j++) {
+                Board board = boards[i][j];
+                Board opponentBoard = boards[j][i];
+
                 if (!boards[i][j].isFull()) {
-                    if (hasTwoInARowWithinBoard(boards[i][j], mark)) score += 5; // Threat detection
-                    if (hasTwoInARowWithinBoard(boards[i][j], opponent)) score -= 5;
+                    score += getThreatScore(boards[i][j], mark); // Threat detection
+                    score -= getThreatScore(boards[i][j], opponent);
                 }
 
-                rowWinThreats += boards[i][j].isWinning(mark) ? 1 : 0;
-                colWinThreats += boards[j][i].isWinning(mark) ? 1 : 0;
-                opponentRowThreats += boards[i][j].isWinning(opponent) ? 1 : 0;
-                opponentColThreats += boards[j][i].isWinning(opponent) ? 1 : 0;
+                rowWinThreats += board.isWinning(mark) ? 1 : 0;
+                colWinThreats += opponentBoard.isWinning(mark) ? 1 : 0;
+                opponentRowThreats += board.isWinning(opponent) ? 1 : 0;
+                opponentColThreats += opponentBoard.isWinning(opponent) ? 1 : 0;
             }
 
-            if (rowWinThreats == 2) score += 7;  // Strong row threat
-            if (colWinThreats == 2) score += 7;  // Strong column threat
-            if (opponentRowThreats == 2) score -= 7;
-            if (opponentColThreats == 2) score -= 7;
+            if (rowWinThreats == 2)
+                score += 10; // Strong row threat
+            if (colWinThreats == 2)
+                score += 10; // Strong column threat
+            if (opponentRowThreats == 2)
+                score -= 10;
+            if (opponentColThreats == 2)
+                score -= 10;
         }
 
         // Diagonal chain potential
@@ -550,48 +555,68 @@ class BigBoard {
             opponentAntiDiagThreats += boards[i][2 - i].isWinning(opponent) ? 1 : 0;
         }
 
-        if (mainDiagThreats == 2) score += 7;
-        if (antiDiagThreats == 2) score += 7;
-        if (opponentMainDiagThreats == 2) score -= 7;
-        if (opponentAntiDiagThreats == 2) score -= 7;
+        if (mainDiagThreats == 2)
+            score += 7;
+        if (antiDiagThreats == 2)
+            score += 7;
+        if (opponentMainDiagThreats == 2)
+            score -= 7;
+        if (opponentAntiDiagThreats == 2)
+            score -= 7;
 
         return score;
     }
 
-    private boolean hasTwoInARowWithinBoard(Board board, Mark mark) {
+    private int getThreatScore(Board board, Mark mark) {
         Mark[][] tiles = board.getBoard();
+        int[] rowCount = new int[3];
+        int[] colCount = new int[3];
+        int mainDiag = 0, antiDiag = 0;
+        int emptySpots = 0;
+        int threatsCount = 0; // Count independent threats
 
-        // Rows and Columns
         for (int i = 0; i < 3; i++) {
-            if ((tiles[i][0] == mark && tiles[i][1] == mark && tiles[i][2] == Mark.EMPTY) ||
-                    (tiles[i][0] == mark && tiles[i][2] == mark && tiles[i][1] == Mark.EMPTY) ||
-                    (tiles[i][1] == mark && tiles[i][2] == mark && tiles[i][0] == Mark.EMPTY)) {
-                return true;
+            for (int j = 0; j < 3; j++) {
+                if (tiles[i][j] == mark) {
+                    rowCount[i]++;
+                    colCount[j]++;
+                    if (i == j)
+                        mainDiag++;
+                    if (i + j == 2)
+                        antiDiag++;
+                } else if (tiles[i][j] == Mark.EMPTY) {
+                    emptySpots++;
+                }
             }
-
-            if ((tiles[0][i] == mark && tiles[1][i] == mark && tiles[2][i] == Mark.EMPTY) ||
-                    (tiles[0][i] == mark && tiles[2][i] == mark && tiles[1][i] == Mark.EMPTY) ||
-                    (tiles[1][i] == mark && tiles[2][i] == mark && tiles[0][i] == Mark.EMPTY)) {
-                return true;
-            }
         }
 
-        // Diagonals
-        if ((tiles[0][0] == mark && tiles[1][1] == mark && tiles[2][2] == Mark.EMPTY) ||
-                (tiles[0][0] == mark && tiles[2][2] == mark && tiles[1][1] == Mark.EMPTY) ||
-                (tiles[1][1] == mark && tiles[2][2] == mark && tiles[0][0] == Mark.EMPTY)) {
-            return true;
-        }
+        // Count two-in-a-row threats
+        if (rowCount[0] == 2)
+            threatsCount++;
+        if (rowCount[1] == 2)
+            threatsCount++;
+        if (rowCount[2] == 2)
+            threatsCount++;
 
-        if ((tiles[0][2] == mark && tiles[1][1] == mark && tiles[2][0] == Mark.EMPTY) ||
-                (tiles[0][2] == mark && tiles[2][0] == mark && tiles[1][1] == Mark.EMPTY) ||
-                (tiles[1][1] == mark && tiles[2][0] == mark && tiles[0][2] == Mark.EMPTY)) {
-            return true;
-        }
+        if (colCount[0] == 2)
+            threatsCount++;
+        if (colCount[1] == 2)
+            threatsCount++;
+        if (colCount[2] == 2)
+            threatsCount++;
 
-        return false;
+        if (mainDiag == 2)
+            threatsCount++;
+        if (antiDiag == 2)
+            threatsCount++;
+
+        if (threatsCount >= 2 && emptySpots > 1)
+            return 20; // More than one threat detected
+        if (threatsCount == 1)
+            return 5; // Normal two-in-a-row singular threat
+
+        return 0;
     }
-
 
     public BigBoard copy() {
         BigBoard newBigBoard = new BigBoard();
@@ -602,7 +627,5 @@ class BigBoard {
         }
         return newBigBoard;
     }
-
-
 
 }

@@ -365,6 +365,31 @@ class BigBoard {
     public int hasCornerAdvantage(Mark mark) {
         Mark opponent = (mark == Mark.X) ? Mark.O : Mark.X;
 
+        // Check if corner are owned
+        if ((boards[0][0].getWinner() == mark ||
+                boards[0][2].getWinner() == mark ||
+                boards[2][0].getWinner() == mark ||
+                boards[2][2].getWinner() == mark) 
+                &&
+                (boards[0][0].getWinner() == opponent ||
+                boards[0][2].getWinner() == opponent ||
+                boards[2][0].getWinner() == opponent ||
+                boards[2][2].getWinner() == opponent))
+                {
+            return 0;
+        }
+        if (boards[0][0].getWinner() == mark ||
+                boards[0][2].getWinner() == mark ||
+                boards[2][0].getWinner() == mark ||
+                boards[2][2].getWinner() == mark){
+            return 16;
+        }
+        if (boards[0][0].getWinner() == opponent ||
+                boards[0][2].getWinner() == opponent ||
+                boards[2][0].getWinner() == opponent ||
+                boards[2][2].getWinner() == opponent){
+            return -16;
+        }
         if ((boards[0][0].hasMark(mark) && this.boards[0][0].getWinner() == null ||
                 boards[0][2].hasMark(mark) && this.boards[0][2].getWinner() == null ||
                 boards[2][0].hasMark(mark) && this.boards[2][0].getWinner() == null ||
@@ -388,18 +413,6 @@ class BigBoard {
                 boards[2][0].hasMark(opponent) && this.boards[2][0].getWinner() == null ||
                 boards[2][2].hasMark(opponent) && this.boards[2][2].getWinner() == null){
             return -8;
-        }
-        if (boards[0][0].getWinner() == mark ||
-                boards[0][2].getWinner() == mark ||
-                boards[2][0].getWinner() == mark ||
-                boards[2][2].getWinner() == mark){
-            return 16;
-        }
-        if (boards[0][0].getWinner() == opponent ||
-                boards[0][2].getWinner() == opponent ||
-                boards[2][0].getWinner() == opponent ||
-                boards[2][2].getWinner() == opponent){
-            return -16;
         }
          else {
             return 0;

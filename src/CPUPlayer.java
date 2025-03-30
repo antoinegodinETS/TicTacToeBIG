@@ -105,14 +105,16 @@ class CPUPlayer
         int depth =0;
 
         if (moveCount < 15) depth = 6;  // Reduce depth early game
-        if (moveCount >= 15 && moveCount <30) depth = 6; // Increase depth mid game
-        if (moveCount >= 30) depth = 6; // Increase depth late game
+        if (moveCount >= 15 && moveCount <30) depth = 8; // Increase depth mid game
+        if (moveCount >= 30) depth = 8; // Increase depth late game
         System.out.println("depth = " + depth);
 
         ArrayList<Move> bestMoves = alphaBeta(bigBoard, true, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, lastMove, true);
 
         // 🚀 Only print final selected moves (not every recursive call)
         System.out.println("Final best moves: " + bestMoves);
+
+        System.out.println(bigBoard);
 
         return bestMoves;
 

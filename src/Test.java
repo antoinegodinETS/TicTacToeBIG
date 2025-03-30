@@ -6,19 +6,10 @@ class Test{
         int[] resultat = new int[2];
         int[] testResultat = new int[2];
 
-        try {
-            System.out.println("\nTest 1: isCenterControlled");
-            testResultat = testIsCenterControlled();
-            resultat[0] += testResultat[0];
-            resultat[1] += testResultat[1];
-        } catch (Exception e) {}
-
-        try {
-            System.out.println("\nTest 2: hasCornerAdvantage");
-        testResultat = testHasCornerAdvantage();
+        System.out.println("test Board isWinning");
+        testResultat = testBoardIsWinning();
         resultat[0] += testResultat[0];
         resultat[1] += testResultat[1];
-        } catch (Exception e) {}
 
 
         System.out.println("\nRésultat des tests: " + resultat[1] + " succès sur " + resultat[0]);
@@ -32,6 +23,43 @@ class Test{
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
+
+
+    public static int[] testBoardIsWinning() {
+        Board board = new Board();
+        int[] resultat = new int[2];
+
+        System.out.println("Si le plateau est gagné par une marque");
+        board.play(new Move(0, 0), Mark.X);
+        board.play(new Move(0, 1), Mark.X);
+        board.play(new Move(0, 2), Mark.X);
+        if (board.isWinning(Mark.X) == true){
+            System.out.println(ANSI_GREEN + "La marque X a gagné" + ANSI_RESET);
+            resultat[1] += 1;
+        } else {
+            System.out.println(ANSI_RED + "La marque X n'a pas gagné" + ANSI_RESET);
+        }
+        resultat[0] += 1;
+
+        if (board.isWinning(Mark.O) == false){
+            System.out.println(ANSI_GREEN + "La marque O n'a pas gagné" + ANSI_RESET);
+            resultat[1] += 1;
+        } else {
+            System.out.println(ANSI_RED + "La marque O a gagné" + ANSI_RESET);
+        }
+        resultat[0] += 1;
+
+        System.out.println("Test de board.winner");
+        if (board.getWinner() == Mark.X){
+            System.out.println(ANSI_GREEN + "board.winner fonctionne" + ANSI_RESET);
+            resultat[1] += 1;
+        } else {
+            System.out.println(ANSI_RED + "board.winner ne fonctionne pas" + ANSI_RESET);
+        }
+        resultat[0] += 1;
+
+        return resultat;
+    }
 
     public static int[] testIsCenterControlled(){
         

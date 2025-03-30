@@ -101,6 +101,9 @@ class BigBoard {
     }
 
     public boolean isFull() {
+        if (this.isWinningBigBoard(Mark.X) || this.isWinningBigBoard(Mark.O)) {
+            return true;
+        }
         for (Board[] row : boards) {
             for (Board board : row) {
                 if (!board.isFull()) {
@@ -116,47 +119,6 @@ class BigBoard {
     }
 
 
-
-    private int evaluatePartialBigBoardWins(Mark mark) {
-        int score = 0;
-        // Check rows for 2 out of 3 wins
-        for (int i = 0; i < 3; i++) {
-            int winCount = 0;
-            for (int j = 0; j < 3; j++) {
-                if (boards[i][j].isWinning(mark))
-                    winCount++;
-            }
-            if (winCount == 2)
-                score += 5;
-        }
-
-        // Check columns for 2 out of 3 wins
-        for (int j = 0; j < 3; j++) {
-            int winCount = 0;
-            for (int i = 0; i < 3; i++) {
-                if (boards[i][j].isWinning(mark))
-                    winCount++;
-            }
-            if (winCount == 2)
-                score += 5;
-        }
-
-        // Check diagonals
-        int mainDiagWins = 0;
-        int antiDiagWins = 0;
-        for (int i = 0; i < 3; i++) {
-            if (boards[i][i].isWinning(mark))
-                mainDiagWins++;
-            if (boards[i][2 - i].isWinning(mark))
-                antiDiagWins++;
-        }
-        if (mainDiagWins == 2)
-            score += 5;
-        if (antiDiagWins == 2)
-            score += 5;
-
-        return score;
-    }
 
     //
     public boolean isWinningBigBoard(Mark mark) {
@@ -224,11 +186,14 @@ class BigBoard {
 
         // More sophisticated scoring
         int score = calculateBoardControlScore(mark);
-        score += calculateStrategicPositionsScore(mark);
+        //score += calculateStrategicPositionsScore(mark);
         score += calculatePotentialWinScore(mark);
 
         return score;
     }
+
+
+// Evaluation : Board control
 
     private int calculateBoardControlScore(Mark mark) {
         int score = 0;
@@ -248,13 +213,6 @@ class BigBoard {
         }
         return score;
     }
-
-    private int calculateStrategicPositionsScore(Mark mark) {
-        return evaluatePartialBigBoardWins(mark) * 2; // Multiply existing partial win logic
-    }
-
-
-
 
     // Enhanced individual board evaluation with positional weighting
     private int evaluateIndividualBoard(Board board, Mark mark) {
@@ -333,8 +291,55 @@ class BigBoard {
         return score;
     }
 
+// Evaluation : Strategic positions
 
-//    Evaluation : Winscore
+    private int calculateStrategicPositionsScore(Mark mark) {
+        return evaluatePartialBigBoardWins(mark) * 2; // Multiply existing partial win logic
+    }
+
+    private int evaluatePartialBigBoardWins(Mark mark) {
+        int score = 0;
+        // Check rows for 2 out of 3 wins
+        for (int i = 0; i < 3; i++) {
+            int winCount = 0;
+            for (int j = 0; j < 3; j++) {
+                if (boards[i][j].getWinner() == mark)
+                    winCount++;
+            }
+            if (winCount == 2)
+                score += 5;
+        }
+
+        // Check columns for 2 out of 3 wins
+        for (int j = 0; j < 3; j++) {
+            int winCount = 0;
+            for (int i = 0; i < 3; i++) {
+                if (boards[i][j].getWinner() == mark)
+                    winCount++;
+            }
+            if (winCount == 2)
+                score += 5;
+        }
+
+        // Check diagonals
+        int mainDiagWins = 0;
+        int antiDiagWins = 0;
+        for (int i = 0; i < 3; i++) {
+            if (boards[i][i].isWinning(mark))
+                mainDiagWins++;
+            if (boards[i][2 - i].isWinning(mark))
+                antiDiagWins++;
+        }
+        if (mainDiagWins == 2)
+            score += 5;
+        if (antiDiagWins == 2)
+            score += 5;
+
+        return score;
+    }
+
+
+// Evaluation : Winscore
 
     private int calculatePotentialWinScore(Mark mark) {
         int potentialScore = 0;
@@ -344,7 +349,7 @@ class BigBoard {
         potentialScore += isCenterControlled(mark);
 
         // Corner control on the big board
-        //potentialScore += hasCornerAdvantage(mark);
+        potentialScore += hasCornerAdvantage(mark);
 
         // Combined Threat & Chain Reaction Scoring in a Single Pass
         potentialScore += calculateThreatAndChainScore(mark, opponent);
@@ -433,16 +438,25 @@ class BigBoard {
                     if (hasTwoInARowWithinBoard(boards[i][j], opponent)) score -= 5;
                 }
 
-                rowWinThreats += boards[i][j].isWinning(mark) ? 1 : 0;
-                colWinThreats += boards[j][i].isWinning(mark) ? 1 : 0;
-                opponentRowThreats += boards[i][j].isWinning(opponent) ? 1 : 0;
-                opponentColThreats += boards[j][i].isWinning(opponent) ? 1 : 0;
+                rowWinThreats += boards[i][j].getWinner() == mark ? 1 : 0;
+                colWinThreats += boards[j][i].getWinner() == mark ? 1 : 0;
+
+                opponentRowThreats += boards[i][j].getWinner() == opponent ? 1 : 0;
+                opponentColThreats += boards[j][i].getWinner() == opponent ? 1 : 0;
+
+                if (boards[i][j].getWinner() == opponent) {
+                    rowWinThreats = -1; // row cannot be completed
+                }
+                if (boards[j][i].getWinner() == opponent) {
+                    colWinThreats = -1; // col cannot be completed
+                }
+
             }
 
-            if (rowWinThreats == 2) score += 7;  // Strong row threat
-            if (colWinThreats == 2) score += 7;  // Strong column threat
-            if (opponentRowThreats == 2) score -= 7;
-            if (opponentColThreats == 2) score -= 7;
+            if (rowWinThreats == 2) score += 15;  // Strong row threat
+            if (colWinThreats == 2) score += 15;  // Strong column threat
+            if (opponentRowThreats == 2) score -= 15;
+            if (opponentColThreats == 2) score -= 15;
         }
 
         // Diagonal chain potential
@@ -454,12 +468,19 @@ class BigBoard {
             antiDiagThreats += boards[i][2 - i].isWinning(mark) ? 1 : 0;
             opponentMainDiagThreats += boards[i][i].isWinning(opponent) ? 1 : 0;
             opponentAntiDiagThreats += boards[i][2 - i].isWinning(opponent) ? 1 : 0;
+
+            if (boards[i][i].getWinner() == opponent) {
+                mainDiagThreats = -1; // diag cannot be completed
+            }
+            if (boards[i][2 - i].getWinner() == opponent) {
+                antiDiagThreats = -1; // diag cannot be completed
+            }
         }
 
-        if (mainDiagThreats == 2) score += 7;
-        if (antiDiagThreats == 2) score += 7;
-        if (opponentMainDiagThreats == 2) score -= 7;
-        if (opponentAntiDiagThreats == 2) score -= 7;
+        if (mainDiagThreats == 2) score += 16;
+        if (antiDiagThreats == 2) score += 16;
+        if (opponentMainDiagThreats == 2) score -= 16;
+        if (opponentAntiDiagThreats == 2) score -= 16;
 
         return score;
     }

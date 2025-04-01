@@ -436,21 +436,21 @@ class BigBoard {
                 Board board = boards[i][j];
                 Board opponentBoard = boards[j][i];
 
-                if (!boards[i][j].isFull()) {
+                if (!board.isFull()) {
                     score += getThreatScore(boards[i][j], mark); // Threat detection
                     score -= getThreatScore(boards[i][j], opponent);
                 }
 
-                rowWinThreats += boards[i][j].getWinner() == mark ? 1 : 0;
-                colWinThreats += boards[j][i].getWinner() == mark ? 1 : 0;
+                rowWinThreats += board.getWinner() == mark ? 1 : 0;
+                colWinThreats += opponentBoard.getWinner() == mark ? 1 : 0;
 
-                opponentRowThreats += boards[i][j].getWinner() == opponent ? 1 : 0;
-                opponentColThreats += boards[j][i].getWinner() == opponent ? 1 : 0;
+                opponentRowThreats += board.getWinner() == opponent ? 1 : 0;
+                opponentColThreats += opponentBoard.getWinner() == opponent ? 1 : 0;
 
-                if (boards[i][j].getWinner() == opponent) {
+                if (board.getWinner() == opponent) {
                     rowWinThreats = -1; // row cannot be completed
                 }
-                if (boards[j][i].getWinner() == opponent) {
+                if (opponentBoard.getWinner() == opponent) {
                     colWinThreats = -1; // col cannot be completed
                 }
 

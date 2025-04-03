@@ -185,9 +185,9 @@ class CPUPlayer
             ArrayList<Move> result = alphaBeta(bigBoard, !isMax, depth - 1, alpha, beta, nextMove, false, startTime, timeLimit);
             int currentScore = result.isEmpty() ? 0 : result.get(0).getScore();
 
-            if (first) {
-                System.out.println("Move: " + move + " Score: " + currentScore);
-            }
+//            if (first) {
+//                System.out.println("Move: " + move + " Score: " + currentScore);
+//            }
 
             boards[boardRow][boardCol].play(new Move(localRow, localCol), Mark.EMPTY);
 

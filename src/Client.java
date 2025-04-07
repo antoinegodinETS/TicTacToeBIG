@@ -12,38 +12,56 @@ class Client {
         BufferedOutputStream output;
         int[][] board = new int[9][9];
         BigBoard bigBoard = new BigBoard();
-        CPUPlayer cpuPlayer= new CPUPlayer(Mark.O);; //initie CPUPlayer
+        CPUPlayer cpuPlayer= new CPUPlayer(Mark.O); //initie CPUPlayer
+        BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+
+        String ipAddress = "127.0.0.1"; // Default IP
+        int port = 8888; // Default port
         
         try {
-            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Choose connection type:");
-            System.out.println("1. Localhost (127.0.0.1)");
-            System.out.println("2. Custom IP address");
-            System.out.print("Enter your choice (1-2): ");
+            // Process command-line arguments
+            if (args.length > 0) {
+                // First argument is IP address
+                ipAddress = args[0];
 
-            String choice = console.readLine().trim();
-            String ipAddress = "10.196.115.204"; // Default IP
-            int port = 8888; // Default port
-
-            switch (choice) {
-                case "1":
-                    ipAddress = "127.0.0.1";
-                    break;
-                case "2":
-                    System.out.print("Enter custom IP address: ");
-                    ipAddress = console.readLine().trim();
-                    System.out.print("Enter port (default 8888): ");
-                    String portInput = console.readLine().trim();
-                    if (!portInput.isEmpty()) {
-                        try {
-                            port = Integer.parseInt(portInput);
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid port number, using default (8888)");
-                        }
+                // Second argument is port (if provided)
+                if (args.length > 1) {
+                    try {
+                        port = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid port number, using default (8888)");
                     }
-                    break;
-                default:
-                    System.out.println("Invalid choice, using default server (10.196.115.204)");
+                }
+                System.out.println("Using IP: " + ipAddress + ", port: " + port);
+            } else {
+                // If no command-line args, use console input
+                System.out.println("Choose connection type:");
+                System.out.println("1. Localhost (127.0.0.1)");
+                System.out.println("2. Custom IP address");
+                System.out.print("Enter your choice (1-2): ");
+
+                String choice = console.readLine().trim();
+
+                switch (choice) {
+                    case "1":
+                        ipAddress = "127.0.0.1";
+                        break;
+                    case "2":
+                        System.out.print("Enter custom IP address: ");
+                        ipAddress = console.readLine().trim();
+                        System.out.print("Enter port (default 8888): ");
+                        String portInput = console.readLine().trim();
+                        if (!portInput.isEmpty()) {
+                            try {
+                                port = Integer.parseInt(portInput);
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid port number, using default (8888)");
+                            }
+                        }
+                        break;
+                    default:
+                        System.out.println("Invalid choice, using default server (127.0.0.1)");
+                }
             }
 
             System.out.println("Connecting to " + ipAddress + ":" + port + "...");

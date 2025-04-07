@@ -219,17 +219,19 @@ class Client {
             }
                 // La partie est terminée
             if(cmd == '5'){
-                    byte[] aBuffer = new byte[16];
-                    int size = input.available();
-                    input.read(aBuffer,0,size);
-            String s = new String(aBuffer);
-            System.out.println("Partie Terminé. Le dernier coup joué est: "+s);
-            String move = null;
-            move = console.readLine();
-            output.write(move.getBytes(),0,move.length());
-            output.flush();
+                byte[] aBuffer = new byte[16];
+                int size = input.available();
+                input.read(aBuffer,0,size);
+                String s = new String(aBuffer);
+                System.out.println("Partie Terminé. Le dernier coup joué est: "+s);
+                // Print the total number of moves made by the CPU player
+                System.out.println("Nombre total de coups joués: " + (cpuPlayer.getMoveCount()));
+                String move = null;
+                move = console.readLine();
+                output.write(move.getBytes(),0,move.length());
+                output.flush();
                     
-            }
+                }
             }
         }
         catch (IOException e) {

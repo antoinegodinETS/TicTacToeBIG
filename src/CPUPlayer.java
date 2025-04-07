@@ -40,7 +40,7 @@ class CPUPlayer
     }
 
     void incrementMoveCount() {
-        moveCount = moveCount + 2;
+        moveCount++;
     }
 
     // Retourne la liste des coups possibles.  Cette liste contient
